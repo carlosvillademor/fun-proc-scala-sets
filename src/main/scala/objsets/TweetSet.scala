@@ -16,7 +16,7 @@ abstract class TweetSet {
   /** This method takes a predicate and returns a subset of all the elements
    *  in the original set for which the predicate is true.
    */
-  def filter(p: Tweet => Boolean): TweetSet = ???
+  def filter(p: Tweet => Boolean): TweetSet = filter0(p, new Empty)
   def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet
 
   def union(that: TweetSet): TweetSet = ???
@@ -55,7 +55,7 @@ abstract class TweetSet {
 
 class Empty extends TweetSet {
 
-  def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = ???
+  def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = this
 
   // The following methods are provided for you, and do not have to be changed
   // -------------------------------------------------------------------------
@@ -70,7 +70,11 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-  def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = ???
+  def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = {
+    def accumulate :TweetSet = if(p(elem)) accu.incl(elem) else accu
+    if(this.tail.isEmpty) accumulate
+    else this.tail.filter0(p, accumulate)
+  }
 
   // The following methods are provided for you, and do not have to be changed
   // -------------------------------------------------------------------------
