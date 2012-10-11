@@ -19,7 +19,9 @@ abstract class TweetSet {
   def filter(p: Tweet => Boolean): TweetSet = filter0(p, new Empty)
   def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet
 
-  def union(that: TweetSet): TweetSet
+  def union(that: TweetSet): TweetSet =
+    if(this.isEmpty) that
+    else this.tail.union(that).incl(this.head)
 
   // Hint: the method "remove" on TweetSet will be very useful.
   def ascendingByRetweet: Trending = ascendingByRetweet0(new EmptyTrending)
@@ -60,8 +62,6 @@ abstract class TweetSet {
 class Empty extends TweetSet {
 
   def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = this
-  
-  def union(that: TweetSet): TweetSet = that
 
   // The following methods are provided for you, and do not have to be changed
   // -------------------------------------------------------------------------
@@ -81,10 +81,6 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if(this.tail.isEmpty) accumulate
     else this.tail.filter0(p, accumulate)
   }
-  
-  def union(that: TweetSet): TweetSet =
-    if(this.tail.isEmpty) that.incl(this.head)
-    else this.tail.union(that).incl(this.head)
 
   // The following methods are provided for you, and do not have to be changed
   // -------------------------------------------------------------------------
@@ -155,20 +151,13 @@ object GoogleVsApple {
 
   val googleTweets: TweetSet = tweets.filter(tweet => google.exists(googleWord => tweet.text.contains(googleWord)))
   val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(appleWord => tweet.text.contains(appleWord)))
-
-  // Q: from both sets, what is the tweet with highest #retweets?
+//
+//  // Q: from both sets, what is the tweet with highest #retweets?
   val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
 }
 
 object Main extends App {
   // Some help printing the results:
-  println("ALL:")
-  GoogleVsApple.tweets foreach println
   println("RANKED:")
-  println("GOOGLE:")
-  GoogleVsApple.googleTweets foreach println
-  println("APPLE:")
-  GoogleVsApple.appleTweets foreach println
-  println("TRENDING:")
   GoogleVsApple.trending foreach println
 }
