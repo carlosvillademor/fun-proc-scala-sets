@@ -82,7 +82,9 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else this.tail.filter0(p, accumulate)
   }
   
-  def union(that: TweetSet): TweetSet = ((left union right) union that) incl elem
+  def union(that: TweetSet): TweetSet =
+    if(this.tail.isEmpty) that.incl(this.head)
+    else this.tail.union(that).incl(this.head)
 
   // The following methods are provided for you, and do not have to be changed
   // -------------------------------------------------------------------------
@@ -149,16 +151,19 @@ object GoogleVsApple {
   
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  val googleTweets: TweetSet = allTweets.filter((tweet: Tweet) => tweet.text.contains("android"))
+  val tweets = allTweets
+  val googleTweets: TweetSet = tweets.filter((tweet) => tweet.text.contains("android"))
 
-  val appleTweets: TweetSet = allTweets.filter((tweet: Tweet) => tweet.text.contains("ios"))
+  val appleTweets: TweetSet = tweets.filter((tweet) => tweet.text.contains("ios"))
 
   // Q: from both sets, what is the tweet with highest #retweets?
-  val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
+  //val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
 }
 
 object Main extends App {
   // Some help printing the results:
   println("RANKED:")
-  GoogleVsApple.trending foreach println
+  GoogleVsApple.googleTweets foreach println
+  GoogleVsApple.appleTweets foreach println
+  //GoogleVsApple.trending foreach println
 }
