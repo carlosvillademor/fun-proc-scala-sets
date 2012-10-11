@@ -1,7 +1,7 @@
 package objsets
 
 import org.scalatest.FunSuite
-
+import TweetReader._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
@@ -22,7 +22,16 @@ class TweetSetSuite extends FunSuite {
     if (set.isEmpty) 0
     else 1 + size(set.tail)
   }
-
+  
+  test("filter: on all tweets") {
+    new TestSets {
+      val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
+      val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
+      val tweets = allTweets
+      assert(size(tweets.filter(tweet => true)) > 0)
+    }
+  }
+  
   test("filter: on empty set") {
     new TestSets {
       assert(size(set1.filter(tw => tw.user == "a")) === 0)

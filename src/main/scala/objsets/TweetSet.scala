@@ -152,12 +152,9 @@ object GoogleVsApple {
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
   val tweets = allTweets
-  
-  val tweetsOrdered = tweets.ascendingByRetweet
-  
-  val googleTweets: TweetSet = tweets.filter(tweet => google.exists(tweet.text.contains))
 
-  val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(tweet.text.contains))
+  val googleTweets: TweetSet = tweets.filter(tweet => google.exists(googleWord => tweet.text.contains(googleWord)))
+  val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(appleWord => tweet.text.contains(appleWord)))
 
   // Q: from both sets, what is the tweet with highest #retweets?
   val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
