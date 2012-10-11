@@ -47,6 +47,12 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
+  test("filter: body on set5") {
+    new TestSets {
+      assert(size(set5.filter(tw => tw.text.contains("body"))) === 4)
+    }
+  }
+
   test("union: set4c and set4d") {
     new TestSets {
       assert(size(set4c.union(set4d)) === 4)

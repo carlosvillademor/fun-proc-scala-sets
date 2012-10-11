@@ -152,18 +152,26 @@ object GoogleVsApple {
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
   val tweets = allTweets
-  val googleTweets: TweetSet = tweets.filter((tweet) => tweet.text.contains("android"))
+  
+  val tweetsOrdered = tweets.ascendingByRetweet
+  
+  val googleTweets: TweetSet = tweets.filter(tweet => google.exists(tweet.text.contains))
 
-  val appleTweets: TweetSet = tweets.filter((tweet) => tweet.text.contains("ios"))
+  val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(tweet.text.contains))
 
   // Q: from both sets, what is the tweet with highest #retweets?
-  //val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
+  val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
 }
 
 object Main extends App {
   // Some help printing the results:
+  println("ALL:")
+  GoogleVsApple.tweets foreach println
   println("RANKED:")
+  println("GOOGLE:")
   GoogleVsApple.googleTweets foreach println
+  println("APPLE:")
   GoogleVsApple.appleTweets foreach println
-  //GoogleVsApple.trending foreach println
+  println("TRENDING:")
+  GoogleVsApple.trending foreach println
 }
