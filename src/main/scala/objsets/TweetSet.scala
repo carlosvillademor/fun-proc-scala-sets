@@ -61,7 +61,7 @@ abstract class TweetSet {
 
 class Empty extends TweetSet {
 
-  def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = this
+  def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = accu
 
   // The following methods are provided for you, and do not have to be changed
   // -------------------------------------------------------------------------
@@ -77,9 +77,9 @@ class Empty extends TweetSet {
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   def filter0(p: Tweet => Boolean, accu: TweetSet): TweetSet = {
-    def accumulate :TweetSet = if(p(elem)) accu.incl(elem) else accu
-    if(this.tail.isEmpty) accumulate
-    else this.tail.filter0(p, accumulate)
+    def accumulate(tweet: Tweet) :TweetSet = if(p(tweet)) accu.incl(tweet) else accu
+    if(this.tail.isEmpty) accumulate(this.head)
+    else this.tail.filter0(p, accumulate(this.head))
   }
 
   // The following methods are provided for you, and do not have to be changed
@@ -149,10 +149,10 @@ object GoogleVsApple {
 
   val tweets = allTweets
 
-  val googleTweets: TweetSet = tweets.filter(tweet => google.exists(googleWord => tweet.text.contains(googleWord)))
-  val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(appleWord => tweet.text.contains(appleWord)))
-//
-//  // Q: from both sets, what is the tweet with highest #retweets?
+  val googleTweets: TweetSet = tweets.filter(tweet => google.exists(tweet.text.contains))
+  val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(tweet.text.contains))
+
+  // Q: from both sets, what is the tweet with highest #retweets?
   val trending: Trending = googleTweets.union(appleTweets).ascendingByRetweet
 }
 

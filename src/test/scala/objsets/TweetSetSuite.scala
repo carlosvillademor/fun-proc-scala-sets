@@ -27,8 +27,22 @@ class TweetSetSuite extends FunSuite {
     new TestSets {
       val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
       val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
+      
       val tweets = allTweets
-      assert(size(tweets.filter(tweet => true)) > 0)
+      
+//      val googleTweets: TweetSet = tweets.filter(tweet => google.exists(googleWord => tweet.text.contains(googleWord)))
+//      val appleTweets: TweetSet = tweets.filter(tweet => apple.exists(appleWord => tweet.text.contains(appleWord)))
+
+      val googleTweets: TweetSet = tweets.filter(tweet => tweet.retweets == 10)
+      val appleTweets: TweetSet = tweets.filter(tweet => tweet.retweets == 10)
+      
+      val filtered = googleTweets.union(appleTweets)
+      
+      val trending: Trending = filtered.ascendingByRetweet
+      
+      //assert(size(googleTweets) === 100)
+      //assert(size(appleTweets) === 200)
+      assert(size(filtered) === 300)
     }
   }
   
@@ -44,6 +58,12 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
+  test("non filter: on set5") {
+    new TestSets {
+      assert(size(set5.filter(tw => true)) === 4)
+    }
+  }
+  
   test("filter: 20 on set5") {
     new TestSets {
       assert(size(set5.filter(tw => tw.retweets == 20)) === 2)
